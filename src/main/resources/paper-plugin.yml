@@ -1,0 +1,4 @@
+name: Epsilon
+version: '1.0'
+main: me.jakinda.epsilon.Epsilon
+api-version: '1.21'
