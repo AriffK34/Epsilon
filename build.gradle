@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'maven-publish'
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
@@ -15,9 +16,17 @@ repositories {
     }
 }
 
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
-    compileOnly("com.github.AriffK34:Epsilon:v1.0")
 }
 
 tasks {
