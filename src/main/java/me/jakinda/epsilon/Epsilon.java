@@ -1,7 +1,6 @@
 package me.jakinda.epsilon;
 
 
-import io.papermc.paper.registry.event.RegistryEvents;
 import me.jakinda.epsilon.block.CustomBlockRegistry;
 import me.jakinda.epsilon.item.CustomItemRegistry;
 import org.bukkit.plugin.java.JavaPlugin;
