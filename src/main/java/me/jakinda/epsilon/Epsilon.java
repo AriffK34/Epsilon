@@ -14,6 +14,7 @@ public final class Epsilon extends JavaPlugin {
     public void onEnable() {
         instance = this;
         registrar = new Registrar(this);
+        registrar.register();
     }
 
     @Override

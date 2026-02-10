@@ -32,7 +32,7 @@ public abstract class CustomItem {
     }
 
     protected CustomItem(String namespace, String id, Material material, Consumer<ItemStack> itemEditor) {
-        String itemId = id == null ? Text.toSnakeCase(this.getClass().getSimpleName()) : id;
+        String itemId = id == null || id.isEmpty() ? Text.toSnakeCase(this.getClass().getSimpleName()) : id;
         String ns = namespace != null ? namespace : Text.extractNamespace(this.getClass());
 
         this.key = new NamespacedKey(ns, itemId);

@@ -1,5 +1,6 @@
 package me.jakinda.epsilon.item;
 
+import me.jakinda.epsilon.Epsilon;
 import me.jakinda.epsilon.Keys;
 import me.jakinda.epsilon.item.components.Craftable;
 import org.bukkit.Bukkit;
@@ -18,8 +19,10 @@ public class CustomItemRegistry {
     public static void register(CustomItem cItem) {
         String key = cItem.getKey().asString();
 
-        if (cItems.containsKey(key))
-            throw new IllegalArgumentException("Custom item " + key + " is already registered!");
+        if (cItems.containsKey(key)) {
+            Epsilon.getInstance().getLogger().warning("Custom item " + key + " is already registered, skipping.");
+            return;
+        }
 
         if (cItem instanceof Craftable craftable)
             Bukkit.addRecipe(craftable.getRecipe());

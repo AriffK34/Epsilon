@@ -1,5 +1,6 @@
 package me.jakinda.epsilon.block;
 
+import me.jakinda.epsilon.Epsilon;
 import me.jakinda.epsilon.Keys;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
@@ -15,8 +16,11 @@ public class CustomBlockRegistry {
     
     public static void register(CustomBlock cBlock) {
         String key = cBlock.getKey().asString();
-        if (cBlocks.containsKey(key))
-            throw new IllegalArgumentException("Custom block " + key + " is already registered.");
+
+        if (cBlocks.containsKey(key)) {
+            Epsilon.getInstance().getLogger().warning("Custom block " + key + " is already registered, skipping.");
+            return;
+        }
 
         cBlocks.put(key, cBlock);
     }

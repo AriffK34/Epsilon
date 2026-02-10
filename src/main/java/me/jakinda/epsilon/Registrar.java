@@ -15,15 +15,10 @@ public class Registrar {
     public Registrar(Epsilon plugin) {
         this.plugin = plugin;
         this.addonLoader = new AddonLoader(plugin);
-        addonLoader.loadAddons();
-
-        items();
-        blocks();
-        commands();
-        events();
     }
 
     private void items() {
+        new TestItem();
         new TestItem();
     }
 
@@ -44,5 +39,13 @@ public class Registrar {
 
     public void unRegister() {
         addonLoader.unloadAddons();
+    }
+
+    public void register() {
+        addonLoader.loadAddons();
+        items();
+        blocks();
+        commands();
+        events();
     }
 }
