@@ -14,14 +14,15 @@ public class CustomBlockRegistry {
     private static final HashMap<String, CustomBlock> cBlocks = new HashMap<>();
     
     public static void register(CustomBlock cBlock) {
-        if (cBlocks.containsKey(cBlock.getId())) {
-            throw new IllegalArgumentException("Custom block with ID " + cBlock.getId() + " is already registered.");
-        }
-        cBlocks.put(cBlock.getId(), cBlock);
+        String key = cBlock.getKey().asString();
+        if (cBlocks.containsKey(key))
+            throw new IllegalArgumentException("Custom block " + key + " is already registered.");
+
+        cBlocks.put(key, cBlock);
     }
 
-    public static CustomBlock get(String id) {
-        return cBlocks.get(id);
+    public static CustomBlock get(String query) {
+        return query.contains(":") ? cBlocks.get(query) : cBlocks.get("epsilon:" + query);
     }
 
     public static Set<String> getIds() {
@@ -33,11 +34,11 @@ public class CustomBlockRegistry {
         if (block == null) return null;
         if (!(block.getState() instanceof Skull skull)) return null;
 
-        String id = skull.getPersistentDataContainer().get(Keys.CUSTOM_BLOCK, PersistentDataType.STRING);
+        String key = skull.getPersistentDataContainer().get(Keys.CUSTOM_BLOCK, PersistentDataType.STRING);
 
-        if (id == null) return null;
+        if (key == null) return null;
 
-        return cBlocks.get(id);
+        return cBlocks.get(key);
     }
 
     public static void clear() {

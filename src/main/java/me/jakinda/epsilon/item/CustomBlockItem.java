@@ -22,7 +22,7 @@ public class CustomBlockItem extends CustomItem implements Placeable {
     private final CustomBlock cBlock;
 
     public CustomBlockItem(CustomBlock cBlock, Consumer<ItemStack> itemEditor) {
-        super(cBlock.getId(), Material.PLAYER_HEAD, itemEditor);
+        super(cBlock.getKey().getNamespace(), cBlock.getKey().getKey(), Material.PLAYER_HEAD, itemEditor);
         this.cBlock = cBlock;
     }
 
@@ -32,7 +32,7 @@ public class CustomBlockItem extends CustomItem implements Placeable {
         Block block = event.getBlock();
         if (!(block.getState() instanceof Skull skull)) return;
 
-        skull.getPersistentDataContainer().set(Keys.CUSTOM_BLOCK, PersistentDataType.STRING, getId());
+        skull.getPersistentDataContainer().set(Keys.CUSTOM_BLOCK, PersistentDataType.STRING, getKey().asString());
         PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
         profile.setProperty(new ProfileProperty("textures", cBlock.getTextureId()));
         skull.setOwnerProfile(profile);

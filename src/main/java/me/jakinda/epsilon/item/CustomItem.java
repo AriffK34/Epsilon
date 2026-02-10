@@ -11,22 +11,12 @@ import java.util.function.Consumer;
 
 public abstract class CustomItem {
 
-    private final String id;
+//    private final String id;
     private final ItemStack item;
     private final NamespacedKey key;
 
     public CustomItem(String id, Material material, Consumer<ItemStack> itemEditor) {
-        this.id = id == null ? Text.toSnakeCase(this.getClass().getSimpleName()) : id;
-        this.key = new NamespacedKey("epsilon", this.id);
-        this.item = new ItemStack(material);
-
-        item.editMeta(meta -> {
-            meta.getPersistentDataContainer().set(Keys.CUSTOM_ITEM, PersistentDataType.STRING, this.id);
-        });
-
-        if (itemEditor != null) itemEditor.accept(item);
-
-        CustomItemRegistry.register(this);
+        this(null, id, material, itemEditor);
     }
 
     public CustomItem(Material material, Consumer<ItemStack> itemEditor) {
@@ -41,9 +31,20 @@ public abstract class CustomItem {
         this(null, material, null);
     }
 
+    protected CustomItem(String namespace, String id, Material material, Consumer<ItemStack> itemEditor) {
+        String itemId = id == null ? Text.toSnakeCase(this.getClass().getSimpleName()) : id;
+        String ns = namespace != null ? namespace : Text.extractNamespace(this.getClass());
 
-    public String getId() {
-        return id;
+        this.key = new NamespacedKey(ns, itemId);
+        this.item = new ItemStack(material);
+
+        item.editMeta(meta -> {
+            meta.getPersistentDataContainer().set(Keys.CUSTOM_ITEM, PersistentDataType.STRING, key.asString());
+        });
+
+        if (itemEditor != null) itemEditor.accept(item);
+
+        CustomItemRegistry.register(this);
     }
 
     public ItemStack getItem() {

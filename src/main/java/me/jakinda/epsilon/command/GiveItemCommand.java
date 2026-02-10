@@ -16,7 +16,7 @@ public class GiveItemCommand {
 
     public static LiteralCommandNode<CommandSourceStack> createCommand() {
         return Commands.literal("giveitem")
-                .then(Commands.argument("item_id", StringArgumentType.word())
+                .then(Commands.argument("item", StringArgumentType.string())
                         .suggests((ctx, builder) -> {
                             CustomItemRegistry.getIds().forEach(builder::suggest);
                             return builder.buildFuture();
@@ -33,13 +33,13 @@ public class GiveItemCommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        String itemId = StringArgumentType.getString(ctx, "item_id");
-        CustomItem customItem = CustomItemRegistry.get(itemId);
+        String key = StringArgumentType.getString(ctx, "item");
+        CustomItem customItem = CustomItemRegistry.get(key);
 
         if (customItem == null) {
             player.sendMessage(Text.of(
-                    "<red>Couldn't find item: <yellow><id></yellow></red>",
-                    "id", itemId
+                    "<red>Couldn't find item: <yellow><key></yellow></red>",
+                    "key", key
             ));
             return Command.SINGLE_SUCCESS;
         }

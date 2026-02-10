@@ -46,5 +46,16 @@ public class Text {
                 .replaceAll("([a-z])([A-Z])", "$1_$2")
                 .toLowerCase();
     }
+
+    public static String extractNamespace(Class<?> clazz) {
+        String packageName = clazz.getPackageName();
+        String[] parts = packageName.split("\\.");
+
+        if (parts.length > 2) {
+            return parts[2].toLowerCase().replaceAll("[^a-z]", "");
+        }
+
+        return parts[parts.length - 1].toLowerCase().replaceAll("[^a-z]", "");
+    }
 }
 

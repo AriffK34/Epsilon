@@ -16,19 +16,19 @@ public class CustomItemRegistry {
     private final static HashMap<String, CustomItem> cItems = new HashMap<>();
 
     public static void register(CustomItem cItem) {
-        if (cItems.containsKey(cItem.getId())) {
-            throw new IllegalArgumentException("Custom item with id " + cItem.getId() + " is already registered!");
-        }
+        String key = cItem.getKey().asString();
 
-        if (cItem instanceof Craftable craftable) {
+        if (cItems.containsKey(key))
+            throw new IllegalArgumentException("Custom item " + key + " is already registered!");
+
+        if (cItem instanceof Craftable craftable)
             Bukkit.addRecipe(craftable.getRecipe());
 
-        }
-        cItems.put(cItem.getId(), cItem);
+        cItems.put(key, cItem);
     }
 
-    public static CustomItem get(String id) {
-        return cItems.get(id);
+    public static CustomItem get(String query) {
+        return query.contains(":") ? cItems.get(query) : cItems.get("epsilon:" + query);
     }
 
     public static CustomItem identify(ItemStack item) {
@@ -38,8 +38,8 @@ public class CustomItemRegistry {
         if (meta == null) return null;
         
         if (meta.getPersistentDataContainer().has(Keys.CUSTOM_ITEM)) {
-            String id = meta.getPersistentDataContainer().get(Keys.CUSTOM_ITEM, PersistentDataType.STRING);
-            return cItems.get(id);
+            String key = meta.getPersistentDataContainer().get(Keys.CUSTOM_ITEM, PersistentDataType.STRING);
+            return cItems.get(key);
         }
         
         return null;
