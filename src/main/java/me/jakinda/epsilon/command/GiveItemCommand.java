@@ -1,14 +1,15 @@
 package me.jakinda.epsilon.command;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import me.jakinda.epsilon.item.CustomItem;
 import me.jakinda.epsilon.item.CustomItemRegistry;
 import me.jakinda.epsilon.util.Text;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -16,9 +17,16 @@ public class GiveItemCommand {
 
     public static LiteralCommandNode<CommandSourceStack> createCommand() {
         return Commands.literal("giveitem")
-                .then(Commands.argument("item", StringArgumentType.string())
+                .then(Commands.argument("item", ArgumentTypes.namespacedKey())
                         .suggests((ctx, builder) -> {
-                            CustomItemRegistry.getIds().forEach(builder::suggest);
+                            String input = builder.getRemaining().toLowerCase();
+                            CustomItemRegistry.getIds().forEach(key -> {
+                                String id = key.split(":")[1];
+
+                                if (key.toLowerCase().startsWith(input) || id.toLowerCase().startsWith(input)) {
+                                    builder.suggest(key);
+                                }
+                            });
                             return builder.buildFuture();
                         })
                         .executes(GiveItemCommand::execute))
@@ -33,13 +41,16 @@ public class GiveItemCommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        String key = StringArgumentType.getString(ctx, "item");
-        CustomItem customItem = CustomItemRegistry.get(key);
+        NamespacedKey key = ctx.getArgument("item", NamespacedKey.class);
+        String fullKey = key.getNamespace().equals("minecraft")
+                ? "epsilon:" + key.getKey()
+                : key.asString();
+        CustomItem customItem = CustomItemRegistry.get(fullKey);
 
         if (customItem == null) {
             player.sendMessage(Text.of(
                     "<red>Couldn't find item: <yellow><key></yellow></red>",
-                    "key", key
+                    "key", fullKey
             ));
             return Command.SINGLE_SUCCESS;
         }
